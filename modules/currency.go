@@ -50,7 +50,7 @@ func setTDBEvent(listDB map[string]*models.Currency, list []*models.JsonCurrency
 		}
 	}
 }
-func (c *currency) Sync() {
+func (c *currency) Sync() map[string]*models.Currency {
 	listDB, err := getCurrenciesFromDB()
 	if err != nil {
 		util.Logger().Error(err)
@@ -79,4 +79,5 @@ func (c *currency) Sync() {
 			break
 		}
 	}
+	return listDB
 }

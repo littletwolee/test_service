@@ -8,7 +8,7 @@ services:
       chunk: 10
 
 mysql:
-  host:  
+  host: 
   port: 3306
   dbname: gate
   user: gate

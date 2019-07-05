@@ -83,12 +83,12 @@ func (hc *HttpCli) Do(method string) error {
 	if err != nil {
 		return err
 	}
+
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("read data from response error: %s", err.Error())
 	}
-
 	hc.body = body
 	return err
 }

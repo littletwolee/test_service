@@ -2,10 +2,12 @@ package modules
 
 import (
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 	"test_services/models"
 	"test_services/util"
+	"time"
 )
 
 type index struct{ host string }
@@ -15,26 +17,36 @@ func NewIndex() *index {
 		host: "https://www.gateio.io/json_svr/query",
 	}
 }
-func (i *index) Sync(list []*models.Currency) {
+func (i *index) Sync(list map[string]*models.Currency) {
 	for _, v := range list {
 		data, err := i.getIndexFromGate(v.Name)
 		if err != nil {
 			util.Logger().ErrorF("get %s data from gate error: %s", v.Name, err.Error())
 		}
-		i.saveToDB(v.Name, data)
+		calculateMA(&data)
+		if len(data) > 48 {
+			i.saveToDB(v.Name, data[:48])
+		} else {
+			i.saveToDB(v.Name, data)
+		}
+
 	}
 }
 
-func (i *index) getIndexFromGate(cname string) ([]*models.Index, error) {
+func (i *index) getIndexFromGate(cname string) (models.Indexs, error) {
 	cli := util.NewClient()
-	err := cli.ParseUrl(i.host).Query("u", "10").Query("c", "4846799").Query("type", "kline").Query("symbol", cname).Query("group_sec", "1800").Query("range_hour", "4.7").Do(http.MethodGet)
+	err := cli.ParseUrl(i.host).Query("u", "10").Query("c", "4846799").Query("type", "kline").Query("symbol", cname).Query("group_sec", "1800").Query("range_hour", "7.7").Do(http.MethodGet)
 	if err != nil {
 		return nil, err
 	}
-	var list []*models.Index
+	var list models.Indexs
 	for _, v := range strings.Split(string(cli.Body()), "\n")[1:] {
 		data := strings.Split(v, ",")
+		if len(data) < 5 {
+			continue
+		}
 		list = append(list, &models.Index{
+			CName: cname,
 			Dt:    i.toFInt(data[0]),
 			Start: i.toFloat(data[1]),
 			High:  i.toFloat(data[2]),
@@ -42,11 +54,21 @@ func (i *index) getIndexFromGate(cname string) ([]*models.Index, error) {
 			End:   i.toFloat(data[4]),
 		})
 	}
+	sort.Sort(sort.Reverse(list))
 	return list, nil
+}
+
+func calculateMA(is *models.Indexs) {
+	for i, v := range *is {
+		v.MA5 = is.MA(i, 5)
+		v.MA10 = is.MA(i, 10)
+		v.MA30 = is.MA(i, 30)
+	}
 }
 
 func (i *index) saveToDB(cname string, list []*models.Index) {
 	for _, v := range list {
+		v.Modefy = time.Now().UTC().Unix()
 		count, err := v.Count()
 		if err != nil {
 			util.Logger().ErrorF("search cname: %s, dt: %d, exists error: %s", cname, v.Dt, err.Error())
