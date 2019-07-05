@@ -1,0 +1,16 @@
+app:
+  log: 
+    path: "logs/"
+services:
+  crawl:
+    currency: 
+      interval: 1800
+      chunk: 10
+
+mysql:
+  host:  
+  port: 3306
+  dbname: gate
+  user: gate
+  pwd: CVzF5VnSsJu7f6g
+  #pwd: 123456
