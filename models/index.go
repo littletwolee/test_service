@@ -10,6 +10,9 @@ type Index struct {
 	MA5    float64 `xorm:"ma5"`
 	MA10   float64 `xorm:"ma10"`
 	MA30   float64 `xorm:"ma30"`
+	K      float64 `xorm:"k"`
+	D      float64 `xorm:"d"`
+	J      float64 `xorm:"j"`
 	Dt     int     `xorm:"dt"`
 	CName  string  `xorm:"cname"`
 	Modefy int64   `xorm:"last_modify"`
@@ -33,6 +36,33 @@ func (is Indexs) MA(i, l int) float64 {
 		result += is[k].End
 	}
 	return result / float64(max-i)
+}
+
+// func (is Indexs) K() float64 {
+
+// }
+func (is Indexs) rsv(i, l int) float64 {
+	low, high := is.lowAndHigh(i, l)
+	return (is[i].End - low) / (high - low) * 100
+}
+
+func (is Indexs) lowAndHigh(i, l int) (float64, float64) {
+	var high, low float64
+	max := is.Len()
+	if max >= i+l {
+		max = i + l
+	}
+	low = is[i].Low
+	high = is[i].High
+	for k := i; k < max; k++ {
+		if is[k].Low < low {
+			low = is[k].Low
+		}
+		if is[k].High > high {
+			high = is[k].High
+		}
+	}
+	return low, high
 }
 
 const _TABLE_INDEX = "indexs"
