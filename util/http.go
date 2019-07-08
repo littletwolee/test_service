@@ -2,6 +2,7 @@ package util
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -25,7 +26,8 @@ type HttpCli struct {
 var (
 	httpCli          *http.Client
 	DefaultTransport *http.Transport = &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		Proxy:           http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
 			Timeout:   15 * time.Second,
 			KeepAlive: 30 * time.Second,

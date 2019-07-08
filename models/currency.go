@@ -8,7 +8,6 @@ import (
 )
 
 type Currency struct {
-	ID      int     `xorm:"id"`
 	Name    string  `xorm:"name" `
 	Volume  float64 `xorm:"volume"`
 	Modefy  int64   `xorm:"last_modify"`
@@ -22,7 +21,7 @@ func (c *Currency) Insert() error {
 	return err
 }
 func (c *Currency) Update() error {
-	_, err := util.GetSession().Exec("update "+_TABLE_CURRENCY+" set volume=?,last_modify=?,id=? where name=?;", c.Volume, c.Modefy, c.ID, c.Name)
+	_, err := util.GetSession().Exec("update "+_TABLE_CURRENCY+" set volume=?,last_modify=? where name=?;", c.Volume, c.Modefy, c.Name)
 	return err
 }
 func (c *Currency) Exists() (bool, error) {
@@ -53,7 +52,6 @@ func (jc *JsonCurrency) ToCurrency(event DBEvent) *Currency {
 		util.Logger().ErrorF("parse field volume error: %s", err.Error())
 	}
 	return &Currency{
-		ID:      jc.ID,
 		Name:    jc.Name,
 		Volume:  vol,
 		DBEvent: event,

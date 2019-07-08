@@ -29,7 +29,6 @@ func (i *index) Sync(list map[string]*models.Currency) {
 		} else {
 			i.saveToDB(v.Name, data)
 		}
-
 	}
 }
 
@@ -67,7 +66,9 @@ func calculateMA(is *models.Indexs) {
 }
 
 func (i *index) saveToDB(cname string, list []*models.Index) {
+	var mixDT int
 	for _, v := range list {
+		mixDT = v.Dt
 		v.Modefy = time.Now().UTC().Unix()
 		count, err := v.Count()
 		if err != nil {
@@ -90,7 +91,7 @@ func (i *index) saveToDB(cname string, list []*models.Index) {
 		return
 	}
 	if count > 48 {
-		if err := models.DeleteIndexByWhere(cname, list[0].Dt); err != nil {
+		if err := models.DeleteIndexByWhere(cname, mixDT); err != nil {
 			util.Logger().ErrorF("delete dirty index error: %s, cname: %+v", err.Error(), cname)
 		}
 	}

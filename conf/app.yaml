@@ -8,9 +8,9 @@ services:
       chunk: 10
 
 mysql:
-  host: 
+  host: 127.0.0.1
   port: 3306
   dbname: gate
-  user: gate
-  pwd: CVzF5VnSsJu7f6g
+  user: root
+  pwd: 123456
   #pwd: 123456
