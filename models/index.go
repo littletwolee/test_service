@@ -1,6 +1,9 @@
 package models
 
-import "test_services/util"
+import (
+	"test_services/util"
+	"time"
+)
 
 type Index struct {
 	Start  float64 `xorm:"start"`
@@ -90,4 +93,12 @@ func DeleteIndexByWhere(cname string, dt int) error {
 	var i Index
 	_, err := util.GetSession().Table(_TABLE_INDEX).Where("cname = ? and dt < ?", cname, dt).Delete(&i)
 	return err
+}
+
+type KdjPoint struct {
+	Time time.Time
+	RSV  float64
+	K    float64
+	D    float64
+	J    float64
 }

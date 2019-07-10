@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"fmt"
 	"net/http"
 	"sort"
 	"strconv"
@@ -34,10 +35,14 @@ func (i *index) Sync(list map[string]*models.Currency) {
 
 func (i *index) getIndexFromGate(cname string) (models.Indexs, error) {
 	cli := util.NewClient()
-	err := cli.ParseUrl(i.host).Query("u", "10").Query("c", "4846799").Query("type", "kline").Query("symbol", cname).Query("group_sec", "1800").Query("range_hour", "7.7").Do(http.MethodGet)
+	n := time.Now()
+	to := n.Unix()
+	from := n.AddDate(0, 0, -3).Unix()
+	err := cli.ParseUrl(i.host).Query("u", "10").Query("c", "4846799").Query("type", "tvkline").Query("symbol", cname).Query("interval", "1800").Query("from", strconv.Itoa(int(from))).Query("to", strconv.Itoa(int(to))).Do(http.MethodGet)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(cli.Url())
 	var list models.Indexs
 	for _, v := range strings.Split(string(cli.Body()), "\n")[1:] {
 		data := strings.Split(v, ",")
