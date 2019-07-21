@@ -1,17 +1,19 @@
 package modules
 
 import (
-	"test_services/util"
+	"fmt"
 	"testing"
 )
 
 func init() {
-	util.ConfigInit("../conf")
-	util.LoggerInit()
+	//util.ConfigInit("../conf")
+	//util.LoggerInit()
 }
 func Test_getCurrencies(t *testing.T) {
-	// c := NewCurrency()
-	// if err := c.getCurrenciesFromGate(); err != nil {
-	// 	t.Fatal(err)
-	// }
+	c := NewCurrency()
+	list, err := c.getCurrenciesFromGate()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Println(list)
 }

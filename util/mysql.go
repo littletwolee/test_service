@@ -13,7 +13,7 @@ func MysqlInit() {
 	conf := Config().Mysql
 	engine, err := xorm.NewEngine("mysql", fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=true", conf.User, conf.Pwd, conf.Host, conf.Port, conf.DBName))
 	if err != nil {
-		Logger().PanicF("connect mysql error:%s", err.Error())
+		panic(err)
 	}
 	engine.SetMaxOpenConns(50)
 	engine.SetMaxIdleConns(50)

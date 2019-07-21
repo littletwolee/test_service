@@ -12,5 +12,5 @@ mysql:
   port: 3306
   dbname: gate
   user: root
+  # pwd: CVzF5VnSsJu7f6g
   pwd: 123456
-  #pwd: 123456

@@ -1,9 +1,10 @@
 package models
 
 import (
+	"fmt"
+	"gate/util"
 	"strconv"
 	"strings"
-	"test_services/util"
 	"time"
 )
 
@@ -49,7 +50,7 @@ func (jc *JsonCurrency) ToCurrency(event DBEvent) *Currency {
 	jc.Volume = strings.Replace(jc.Volume, ",", "", -1)
 	vol, err := strconv.ParseFloat(jc.Volume, 64)
 	if err != nil {
-		util.Logger().ErrorF("parse field volume error: %s", err.Error())
+		fmt.Printf("parse field volume error: %s\n", err.Error())
 	}
 	return &Currency{
 		Name:    jc.Name,

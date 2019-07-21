@@ -11,11 +11,10 @@ func Config() *conf {
 }
 
 func ConfigInit(path string) {
-	commons.ConfInit(path)
 	v := commons.GetConfig()
 	c := newConf()
 	if err := v.Unmarshal(c); err != nil {
-		Logger().PanicF("unmarshal conf error:%s", err.Error())
+		panic(err)
 	}
 	config = c
 }

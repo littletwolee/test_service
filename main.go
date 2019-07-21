@@ -1,12 +1,13 @@
 package main
 
 import (
+	"fmt"
+	"gate/services"
+	"gate/util"
 	"os"
 	"os/signal"
 	"sync"
 	"syscall"
-	"test_services/services"
-	"test_services/util"
 )
 
 func main() {
@@ -20,18 +21,19 @@ func main() {
 }
 func _init() {
 	util.ConfigInit("./conf")
-	util.LoggerInit()
+	//util.LoggerInit()
 	util.MysqlInit()
 }
 
 func initServices(wg *sync.WaitGroup) []services.Iservice {
 	return []services.Iservice{
 		services.NewCrawl(wg),
+		services.NewServer(wg),
 	}
 }
 
 func start(servicesList []services.Iservice) {
-	util.Logger().Info("app start")
+	fmt.Println("app start")
 	for _, v := range servicesList {
 		go v.Start()
 	}
@@ -43,5 +45,5 @@ func stop(wg *sync.WaitGroup, exit chan os.Signal, servicesList []services.Iserv
 		v.Stop()
 	}
 	// wg.Wait()
-	util.Logger().Info("app shutdown")
+	fmt.Println("app shutdown")
 }

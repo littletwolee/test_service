@@ -1,7 +1,7 @@
 package models
 
 import (
-	"test_services/util"
+	"gate/util"
 	"time"
 )
 
@@ -16,7 +16,7 @@ type Index struct {
 	K      float64 `xorm:"k"`
 	D      float64 `xorm:"d"`
 	J      float64 `xorm:"j"`
-	Dt     int     `xorm:"dt"`
+	Dt     TimeInt `xorm:"dt"`
 	CName  string  `xorm:"cname"`
 	Modefy int64   `xorm:"last_modify"`
 }
@@ -101,4 +101,10 @@ type KdjPoint struct {
 	K    float64
 	D    float64
 	J    float64
+}
+
+type TimeInt int
+
+func (t TimeInt) T() time.Time {
+	return time.Unix(int64(t), 0).Add(8 * time.Hour)
 }

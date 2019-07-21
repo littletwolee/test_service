@@ -2,9 +2,9 @@ package modules
 
 import (
 	"fmt"
+	"gate/models"
+	"gate/util"
 	"sort"
-	"test_services/models"
-	"test_services/util"
 	"testing"
 	"time"
 
@@ -14,7 +14,7 @@ import (
 
 func init() {
 	util.ConfigInit("../conf")
-	util.LoggerInit()
+	//util.LoggerInit()
 	util.MysqlInit()
 }
 func Test_getIndexFromGate(t *testing.T) {

@@ -1,7 +1,7 @@
 package modules
 
 import (
-	"test_services/models"
+	"gate/models"
 
 	"github.com/idoall/TokenExchangeCommon/commonmodels"
 )

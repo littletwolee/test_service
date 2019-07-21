@@ -1,9 +1,10 @@
 package modules
 
 import (
+	"fmt"
+	"gate/models"
+	"gate/util"
 	"net/http"
-	"test_services/models"
-	"test_services/util"
 )
 
 type currency struct {
@@ -25,6 +26,10 @@ func (c *currency) getCurrenciesFromGate() ([]*models.JsonCurrency, error) {
 	}
 	var list []*models.JsonCurrency
 	for _, v := range currencies["USDT"] {
+		//volume, _ := strconv.ParseFloat(v.Volume, 64)
+		// if volume < 10000.00 {
+		// 	continue
+		// }
 		v.FormatName()
 		list = append(list, v)
 	}
@@ -50,34 +55,34 @@ func setTDBEvent(listDB map[string]*models.Currency, list []*models.JsonCurrency
 		}
 	}
 }
-func (c *currency) Sync() map[string]*models.Currency {
-	listDB, err := getCurrenciesFromDB()
-	if err != nil {
-		util.Logger().Error(err)
-	}
+func (c *currency) Sync() []*models.JsonCurrency {
+	// listDB, err := getCurrenciesFromDB()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 	list, err := c.getCurrenciesFromGate()
 	if err != nil {
-		util.Logger().Error(err)
+		fmt.Println(err)
 	}
-	setTDBEvent(listDB, list)
-	for _, v := range listDB {
-		switch v.DBEvent {
-		case models.INSERT:
-			if err := v.Insert(); err != nil {
-				util.Logger().ErrorF("insert curreny error: %s, data: %+v", err.Error(), v)
-			}
-			break
-		case models.UPDATE:
-			if err := v.Update(); err != nil {
-				util.Logger().ErrorF("update curreny error: %s, data: %+v", err.Error(), v)
-			}
-			break
-		case models.DELETE:
-			if err := v.Delete(); err != nil {
-				util.Logger().ErrorF("delete curreny error: %s, data: %+v", err.Error(), v)
-			}
-			break
-		}
-	}
-	return listDB
+	// setTDBEvent(listDB, list)
+	// for _, v := range list {
+	// 	switch v.DBEvent {
+	// 	case models.INSERT:
+	// 		if err := v.Insert(); err != nil {
+	// 			fmt.Printf("insert curreny error: %s, data: %+v\n", err.Error(), v)
+	// 		}
+	// 		break
+	// 	case models.UPDATE:
+	// 		if err := v.Update(); err != nil {
+	// 			fmt.Printf("update curreny error: %s, data: %+v\n", err.Error(), v)
+	// 		}
+	// 		break
+	// 	case models.DELETE:
+	// 		if err := v.Delete(); err != nil {
+	// 			fmt.Printf("delete curreny error: %s, data: %+v\n", err.Error(), v)
+	// 		}
+	// 		break
+	// 	}
+	// }
+	return list
 }

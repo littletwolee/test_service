@@ -1,9 +1,10 @@
 package services
 
 import (
+	"fmt"
+	"gate/modules"
+	"gate/util"
 	"sync"
-	"test_services/modules"
-	"test_services/util"
 	"time"
 )
 
@@ -24,15 +25,13 @@ func (c *crawl) Start() {
 	index := modules.NewIndex()
 	for {
 		start := time.Now().UTC()
-		util.Logger().InfoF("sync currency start at %s", start)
+		fmt.Printf("sync index start at %s\n", start)
 		next := util.Next(start, time.Duration(util.Config().Services.Crawl.Currency.Interval)*time.Second).Add(10 * time.Second)
+
 		currencies := currency.Sync()
-		end := time.Now().UTC()
-		util.Logger().InfoF("sync currency completed at %s", end)
-		util.Logger().InfoF("sync index start at %s", start)
 		index.Sync(currencies)
-		end = time.Now().UTC()
-		util.Logger().InfoF("sync index completed at %s", end)
+		end := time.Now().UTC()
+		fmt.Printf("sync index completed at %s\n", end)
 		if end.After(next) {
 			continue
 		}
